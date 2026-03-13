@@ -4,7 +4,7 @@ const { MongoClient } = require('mongodb');
 const app  = express();
 app.use(express.json());
 
-const CONNECTION_STRING = "mongodb+srv://emflowgamin_db_user:MzETagBHoQA5NuNv@nobuck.x8myacw.mongodb.net/?appName=nobuck";
+const CONNECTION_STRING = "mongodb+srv://nobuck_user:w8kg28FFy74k1e0j@nobuck.x8myacw.mongodb.net/?appName=nobuck";
 
 const client = new MongoClient(CONNECTION_STRING, {
     serverSelectionTimeoutMS: 10000,
@@ -22,6 +22,7 @@ async function getDB() {
     return client.db('nobuck');
 }
 
+// ── Health check ──────────────────────────────────────
 app.get('/health', async (req, res) => {
     try {
         await getDB();
@@ -31,6 +32,7 @@ app.get('/health', async (req, res) => {
     }
 });
 
+// ── Crear orden ───────────────────────────────────────
 app.post('/orders', async (req, res) => {
     console.log("POST /orders recibido");
     console.log("Body:", JSON.stringify(req.body));
@@ -39,9 +41,9 @@ app.post('/orders', async (req, res) => {
         const db  = await getDB();
         const col = db.collection('orders');
 
-        const date = new Date();
+        const date     = new Date();
         const datePart = date.toISOString().slice(0, 10).replace(/-/g, '');
-        const rnd = Math.floor(Math.random() * 9000) + 1000;
+        const rnd      = Math.floor(Math.random() * 9000) + 1000;
         const orderNumber = `NO-${datePart}-${rnd}`;
 
         const order = {
@@ -63,13 +65,11 @@ app.post('/orders', async (req, res) => {
 
     } catch (err) {
         console.error("Error en /orders:", err.message);
-        res.status(500).json({
-            success: false,
-            error:   err.message
-        });
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 
+// ── Iniciar servidor ──────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor en puerto ${PORT}`);
