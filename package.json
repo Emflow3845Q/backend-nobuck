@@ -1,0 +1,1 @@
+{"name":"nobuck-api","scripts":{"start":"node index.js"},"dependencies":{"express":"*","mongodb":"*"}}
