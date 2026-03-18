@@ -69,6 +69,29 @@ app.post('/orders', async (req, res) => {
     }
 });
 
+// ── Obtener todas las órdenes ─────────────────────────────────────────────────
+app.get('/orders', async (req, res) => {
+    console.log("GET /orders recibido");
+ 
+    try {
+        const db  = await getDB();
+        const col = db.collection('orders');
+ 
+        const userId = req.query.userId || 'default_user';
+        const orders = await col
+            .find({ userId })
+            .sort({ createdAt: -1 })  
+            .toArray();
+ 
+        res.json({ success: true, orders });
+ 
+    } catch (err) {
+        console.error("Error en GET /orders:", err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+ 
+
 // ── Iniciar servidor ──────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
