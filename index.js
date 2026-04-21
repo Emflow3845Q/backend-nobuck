@@ -91,6 +91,22 @@ app.get('/orders', async (req, res) => {
     }
 });
 
+app.get('/orders/:id', async (req, res) => {
+    try {
+        const db = await getDB();
+        const col = db.collection('orders');
+        const order = await col.findOne({ _id: new ObjectId(req.params.id) });
+        
+        if (!order) {
+            return res.status(404).json({ success: false, error: 'Orden no encontrada' });
+        }
+        
+        res.json({ success: true, order });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // ── DIRECCIONES ───────────────────────────────────────
 
 // GET /addresses?userId=xxx — obtener todas las direcciones del usuario
